@@ -1,0 +1,9 @@
+.idea/*
+*/build/*
+*/Debug/*
+*/Release/*
+*/cmake-build-debug/*
+*/cmake-build-release/*
+*/clion-log.txt
+cmake-build-debug/
+examples.md
