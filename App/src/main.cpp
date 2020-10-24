@@ -6,17 +6,24 @@
 #include <ctime>
 #include <memory>
 #include <cstring>
+#include <fstream>
+#include <string>
 
-#include "mint.h"
+#include "myint.h"
 #include "sentence.h"
 #include "smart_ptr.h"
 
-
 int main()
 {
-    Sentence sentence{"Bugun havalar biraz isinmaya basladi."};
+    SmartPtr<int> ptr {new int};
 
-    std::cout << sentence.get_size() << "\n";
+    if (ptr)
+        std::cout << "Gecerli\n";
+    else
+        std::cout << "Gecersiz\n";
 
     return 0;
 }
+
+
+
