@@ -36,8 +36,9 @@ public:
     MyInt& operator--();
     MyInt  operator--(int);
 
-    // Type cast operator func.
+    // Type cast operator functions
     explicit operator int ()const;
+    explicit operator bool ()const;
 
     // Friend inserter and extractor operators
     friend std::ostream& operator<<(std::ostream& os, const MyInt& mint);

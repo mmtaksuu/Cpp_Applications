@@ -102,3 +102,8 @@ MyInt::operator int ()const
 {
     return mval;
 }
+
+MyInt::operator bool ()const
+{
+    return mval != 0;
+}
