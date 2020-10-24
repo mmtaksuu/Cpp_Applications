@@ -27,6 +27,9 @@ public:
     size_t get_size()const;
     static char *sgets(char *p);
 
+    // Type cast operator func.
+    operator std::string ()const;
+
     friend std::istream& operator>>(std::istream& is,       Sentence& s);
     friend std::ostream& operator<<(std::ostream& os, const Sentence& s);
 

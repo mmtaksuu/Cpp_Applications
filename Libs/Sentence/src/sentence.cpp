@@ -73,6 +73,11 @@ Sentence& Sentence::operator+=(const Sentence& other)
     return *this;
 }
 
+Sentence::operator std::string ()const
+{
+    return m_pd;
+}
+
 
 size_t Sentence::get_size()const
 {

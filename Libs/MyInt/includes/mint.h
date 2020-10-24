@@ -36,6 +36,9 @@ public:
     Mint& operator--();
     Mint  operator--(int);
 
+    // Type cast operator func.
+    operator int ()const;
+
     // Friend inserter and extractor operators
     friend std::ostream& operator<<(std::ostream& os, const Mint& mint);
     friend std::istream& operator>>(std::istream& is,       Mint& mint);

@@ -97,3 +97,8 @@ Mint  Mint::operator--(int)
     --*this;
     return temp;
 }
+
+Mint::operator int ()const
+{
+    return mval;
+}
