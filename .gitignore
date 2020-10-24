@@ -7,3 +7,5 @@
 */clion-log.txt
 cmake-build-debug/
 examples.md
+Debug/*
+Release/*
