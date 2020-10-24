@@ -48,6 +48,11 @@ public:
     {
         return m_ptr;
     }
+
+    explicit operator bool ()const
+    {
+        return m_ptr != nullptr;
+    }
 };
 
 
