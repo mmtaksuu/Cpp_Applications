@@ -1,38 +1,38 @@
 #include <iostream>
-#include "../includes/mint.h"
+#include "../includes/myint.h"
 
 
 // Friend inserter and extractor operators
-std::ostream& operator<<(std::ostream& os, const Mint& mint)
+std::ostream& operator<<(std::ostream& os, const MyInt& myint)
 {
-    return os << mint.mval;
+    return os << myint.mval;
 }
 
-std::istream& operator>>(std::istream& is,       Mint& mint)
+std::istream& operator>>(std::istream& is, MyInt& myint)
 {
-    return is >> mint.mval;
+    return is >> myint.mval;
 }
 
 
 // Member logical operators
-bool Mint::operator>(const Mint& other)const
+bool MyInt::operator>(const MyInt& other)const
 {
     return (mval > other.mval);
 }
 
-bool Mint::operator==(const Mint& other)const
+bool MyInt::operator==(const MyInt& other)const
 {
     return (mval == other.mval);
 }
 
 
 // Member sign operators
-Mint Mint::operator+()
+MyInt MyInt::operator+()
 {
     return *this;
 }
 
-Mint Mint::operator-()
+MyInt MyInt::operator-()
 {
     mval *= -1;
     return *this;
@@ -40,31 +40,31 @@ Mint Mint::operator-()
 
 
 // Member Assignment Operators
-Mint& Mint::operator+=(const Mint& other)
+MyInt& MyInt::operator+=(const MyInt& other)
 {
     mval += other.mval;
     return *this;
 }
 
-Mint& Mint::operator-=(const Mint& other)
+MyInt& MyInt::operator-=(const MyInt& other)
 {
     mval -= other.mval;
     return *this;
 }
 
-Mint& Mint::operator*=(const Mint& other)
+MyInt& MyInt::operator*=(const MyInt& other)
 {
     mval *= other.mval;
     return *this;
 }
 
-Mint& Mint::operator/=(const Mint& other)
+MyInt& MyInt::operator/=(const MyInt& other)
 {
     mval = other.mval !=0 ? mval/other.mval : mval;
     return *this;
 }
 
-Mint& Mint::operator%=(const Mint& other)
+MyInt& MyInt::operator%=(const MyInt& other)
 {
     mval = other.mval !=0 ? mval%other.mval : mval;
     return *this;
@@ -72,33 +72,33 @@ Mint& Mint::operator%=(const Mint& other)
 
 
 // Member Increment and Decrement Operators
-Mint& Mint::operator++()
+MyInt& MyInt::operator++()
 {
     ++mval;
     return *this;
 }
 
-Mint  Mint::operator++(int)
+MyInt  MyInt::operator++(int)
 {
-    Mint temp{*this};
+    MyInt temp{*this};
     ++*this;
     return temp;
 }
 
-Mint& Mint::operator--()
+MyInt& MyInt::operator--()
 {
     --mval;
     return *this;
 }
 
-Mint  Mint::operator--(int)
+MyInt  MyInt::operator--(int)
 {
-    Mint temp{*this};
+    MyInt temp{*this};
     --*this;
     return temp;
 }
 
-Mint::operator int ()const
+MyInt::operator int ()const
 {
     return mval;
 }
