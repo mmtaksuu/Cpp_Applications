@@ -18,9 +18,12 @@ int main()
 {
     try
     {
-        time_t timer;
-        Date mydate{time(&timer)};
-        std::cout << mydate << "\n";
+        time_t timer{};
+        Date date1{time(&timer)};
+        std::cout << date1 << "\n";
+
+        Date date2{date1-29};
+        std::cout << date2 << "\n";
     }
     catch (const bad_date& ex)
     {
