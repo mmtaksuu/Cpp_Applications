@@ -14,20 +14,20 @@
 #include "smart_ptr.h"
 #include "date.h"
 
+
 int main()
 {
-    try
-    {
-        time_t timer{};
-        Date date1{time(&timer)};
-        std::cout << date1 << "\n";
 
-        Date date2{date1-29};
-        std::cout << date2 << "\n";
-    }
-    catch (const bad_date& ex)
+    while (true)
     {
-        std::cout << ex.what() << "\n";
+        try
+        {
+            std::cout << Date::random_date() << "\n";
+        }
+        catch (const bad_date& ex)
+        {
+            std::cout << ex.what() << "\n";
+        }
     }
 
     return 0;

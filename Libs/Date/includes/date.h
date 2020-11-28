@@ -70,6 +70,8 @@ public:
     Date& set_year(int year);
     Date& set(int day, int mon, int year);
 
+    static Date random_date ();
+
     Date operator+ (int day) const;
     Date operator- (int day) const;
     Date& operator+= (int day);
@@ -80,9 +82,33 @@ public:
     Date& operator-- ();
     Date  operator-- (int);
 
+    bool operator== (const Date& other)const;
+    bool operator<  (const Date& other)const;
+
     friend std::ostream& operator<< (std::ostream& os, const Date& date);
     friend std::istream& operator>> (std::istream& is, Date& date);
 
 };
+
+inline bool operator!= (const Date& date1, const Date& date2)
+{
+    return !(date1 == date2);
+}
+
+inline bool operator<= (const Date& date1, const Date& date2)
+{
+    return !(date2 < date1);
+}
+
+inline bool operator>  (const Date& date1, const Date& date2)
+{
+    return (date2 < date1);
+}
+
+inline bool operator>= (const Date& date1, const Date& date2)
+{
+    return !(date1 < date2);
+}
+
 
 #endif /* DATE_H */

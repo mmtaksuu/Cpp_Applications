@@ -13,6 +13,7 @@
 #include <cstring>
 #include <iostream>
 #include <iomanip>
+#include <random>
 
 Date::Date () : m_day(01), m_mon(01), m_year(year_base)
 {
@@ -136,7 +137,10 @@ Date& Date::set_year(int year)
 
 Date& Date::set(int day, int mon, int year)
 {
-    Date(day, mon, year);
+    m_day = day > 0 && day <= 31 ? day : throw bad_date{};
+    m_mon = mon > 0 && mon <= 12 ? mon : throw bad_date{};
+    m_year = year > min_rand_year && year <= max_rand_year ? year : throw bad_date{};
+
     return *this;
 }
 
@@ -220,6 +224,22 @@ Date Date::operator-- (int)
     return temp;
 }
 
+bool Date::operator== (const Date & other)const
+{
+    return (m_day == other.m_day && m_mon == other.m_mon && m_year == other.m_year);
+}
+
+bool Date::operator< (const Date & other) const
+{
+    if ((m_year < other.m_year) ||
+        ((m_year == other.m_year) && (m_mon < other.m_mon)) ||
+        ((m_year == other.m_year) && (m_mon == other.m_mon) && (m_day < other.m_day)))
+    {
+        return true;
+    }
+
+    return false;
+}
 
 std::ostream& operator<< (std::ostream & os, const Date & date)
 {
@@ -250,7 +270,7 @@ std::ostream& operator<< (std::ostream & os, const Date & date)
     };
 
     char buff[25]{};
-    std::sprintf(buff, "%2d %-6s %-4d %-6s", date.m_day, p_mons[date.m_mon], date.m_year, p_days[date.get_week_day()]);
+    std::sprintf(buff, "%2d %-7s %-4d %-6s", date.m_day, p_mons[date.m_mon], date.m_year, p_days[date.get_week_day()]);
     return os << buff;
 }
 
@@ -261,6 +281,28 @@ std::istream & operator>> (std::istream & is, Date & date)
     date.str2date(buffer.c_str());
     return is;
 }
+
+Date Date::random_date ()
+{
+    Date date{};
+    static std::mt19937 eng { std::random_device{}() };
+
+    static std::uniform_int_distribution<int>year_dist( min_rand_year, max_rand_year );
+    int year = year_dist(eng);
+
+    static std::uniform_int_distribution<int>mon_dist { 1, 12 };
+    int mon  = mon_dist(eng);
+
+    static std::uniform_int_distribution<int>day_dist ( 1, days_of_months[is_leap(year)][mon] );
+    int day  = day_dist(eng);
+
+    date.set(day, mon, year);
+    return date;
+}
+
+
+
+
 
 
 
