@@ -12,15 +12,20 @@
 #include "myint.h"
 #include "sentence.h"
 #include "smart_ptr.h"
+#include "date.h"
 
 int main()
 {
-    SmartPtr<int> ptr {new int};
-
-    if (ptr)
-        std::cout << "Gecerli\n";
-    else
-        std::cout << "Gecersiz\n";
+    try
+    {
+        time_t timer;
+        Date mydate{time(&timer)};
+        std::cout << mydate << "\n";
+    }
+    catch (const bad_date& ex)
+    {
+        std::cout << ex.what() << "\n";
+    }
 
     return 0;
 }

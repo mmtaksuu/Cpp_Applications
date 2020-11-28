@@ -16,13 +16,11 @@ set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} --coverage)
 add_custom_target(coverage_init ALL ${CODECOV_LCOV} --base-directory .. --directory ${CMAKE_BINARY_DIR} --output-file ${CODECOV_OUTPUTFILE} --capture --initial)
 add_custom_target(coverage ${CODECOV_LCOV} --base-directory .. --directory ${CMAKE_BINARY_DIR} --output-file ${CODECOV_OUTPUTFILE} --capture COMMAND genhtml -o ${CODECOV_HTMLOUTPUTFILE} ${CODECOV_OUTPUTFILE})
 
+file(GLOB_RECURSE DATE_SOURCES "src/date_test.cpp" includes/catch.hpp)
+add_executable(date_test ${DATE_SOURCES})
+target_link_libraries(date_test PRIVATE Libs::Date)
 
-#file(GLOB_RECURSE TEST_SOURCES "src/*.cpp" "includes/*.h" includes/catch.hpp)
-file(GLOB_RECURSE TEST_SOURCES "src/sentence_test.cpp" "includes/*.h" includes/catch.hpp)
+file(GLOB_RECURSE SENTENCE_SOURCES "src/sentence_test.cpp" includes/catch.hpp)
+add_executable(sentence_test ${SENTENCE_SOURCES})
+target_link_libraries(sentence_test PRIVATE Libs::Sentence)
 
-add_executable(${PROJECT_NAME} ${TEST_SOURCES})
-
-target_link_libraries(${PROJECT_NAME} PRIVATE
-        Libs::Sentence
-        Libs::MyInt)
-#        Libs::MySmartPointer)
