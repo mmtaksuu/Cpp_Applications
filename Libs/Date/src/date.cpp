@@ -60,14 +60,20 @@ Date& Date::str2date (const char * p)
         switch (num_of_token)
         {
             case 1:
-                m_day  = std::atoi(token) > 0 && std::atoi(token) <= 31 ? std::atoi(token) : throw bad_date{};
+            {
+                m_day   = std::atoi(token) > 0 && std::atoi(token) <= 31 ? std::atoi(token) : throw bad_date{};
                 break;
+            }
             case 2:
-                m_mon  = std::atoi(token) > 0 && std::atoi(token) <= 12 ? std::atoi(token) : throw bad_date{};
+            {
+                m_mon   = std::atoi(token) > 0 && std::atoi(token) <= 12 ? std::atoi(token) : throw bad_date{};
                 break;
+            }
             case 3:
-                m_year = std::atoi(token) > min_rand_year && std::atoi(token) <= max_rand_year ? std::atoi(token) : throw bad_date{};
+            {
+                m_year   = std::atoi(token) > min_rand_year && std::atoi(token) <= max_rand_year ? std::atoi(token) : throw bad_date{};
                 break;
+            }
             default:
                 break;
         }
@@ -96,7 +102,12 @@ int Date::get_month () const
 
 int Date::get_year_day () const
 {
-    return is_leap(m_year) ? 366 : 365;
+    int until_now_days = m_day;
+
+    for (int i = 1; i < m_mon; ++i)
+        until_now_days += days_of_months[is_leap(m_year)][i];
+
+    return until_now_days;
 }
 
 int Date::get_year () const
@@ -137,8 +148,8 @@ Date& Date::set_year(int year)
 
 Date& Date::set(int day, int mon, int year)
 {
-    m_day = day > 0 && day <= 31 ? day : throw bad_date{};
-    m_mon = mon > 0 && mon <= 12 ? mon : throw bad_date{};
+    m_day  = day > 0 && day <= 31 ? day : throw bad_date{};
+    m_mon  = mon > 0 && mon <= 12 ? mon : throw bad_date{};
     m_year = year > min_rand_year && year <= max_rand_year ? year : throw bad_date{};
 
     return *this;
@@ -146,18 +157,18 @@ Date& Date::set(int day, int mon, int year)
 
 Date Date::operator- (int day) const
 {
-    Date temp{*this};
+    Date date{*this};
     for (int i = 0; i < day; ++i)
-        temp--;
-    return temp;
+        date--;
+    return date;
 }
 
 Date Date::operator+ (int day) const
 {
-    Date temp{*this};
+    Date date{*this};
     for (int i = 0; i < day; ++i)
-        temp++;
-    return temp;
+        date++;
+    return date;
 }
 
 Date & Date::operator+= (int day)

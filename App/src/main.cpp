@@ -18,16 +18,16 @@
 int main()
 {
 
-    while (true)
+    try
     {
-        try
-        {
-            std::cout << Date::random_date() << "\n";
-        }
-        catch (const bad_date& ex)
-        {
-            std::cout << ex.what() << "\n";
-        }
+        time_t timer{};
+        Date mydate{time(&timer)};
+//        mydate - 30;
+        std::cout << mydate - 30 << "\n";
+    }
+    catch (const bad_date& ex)
+    {
+        std::cout << ex.what() << "\n";
     }
 
     return 0;

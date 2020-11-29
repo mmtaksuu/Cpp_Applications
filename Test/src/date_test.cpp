@@ -104,8 +104,7 @@ SCENARIO("Girilen tarihten n gun sonrasinin hesaplanmasi", "[Date::operator+ ()]
 {
     GIVEN("Bugunun tarihi")
     {
-        time_t timer{};
-        Date date1{time(&timer)};
+        Date date1{"28/11/2020"};
 
         WHEN("20 gun sonra") {
             Date date2{date1+20};
@@ -118,8 +117,7 @@ SCENARIO("Girilen tarihten n gun oncesinin hesaplanmasi", "[Date::operator- ()]"
 {
     GIVEN("Bugunun tarihi")
     {
-        time_t timer{};
-        Date date1{time(&timer)};
+        Date date1{"28/11/2020"};
 
         WHEN("29 gun once") {
             Date date2{date1-29};
@@ -216,6 +214,17 @@ SCENARIO("set_month_day function", "[Date& set_month_day(int d)]")
         CHECK(mydate.get_month_day() == Date{"13/08/2017"}.get_month_day());
     }
 }
+
+SCENARIO("get_year_day function", "[int get_year_day()]")
+{
+    GIVEN("A Valid Date")
+    {
+        Date mydate{"29/11/2020"};
+        CHECK(mydate.get_year_day() == 334);
+    }
+}
+
+
 
 
 
