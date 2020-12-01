@@ -32,9 +32,9 @@ Date::Date (const std::string & date)
 
 Date::Date (int day, int mon, int year)
 {
-    m_day  = day > 0 && day <= 31 ? day : throw bad_date{};
-    m_mon  = mon > 0 && mon <= 12 ? mon : throw bad_date{};
-    m_year = year > min_rand_year && year <= max_rand_year ? year : throw bad_date{};
+    m_day  = day > 0 && day < 32 ? day : throw bad_date{};
+    m_mon  = mon > 0 && mon < 13 ? mon : throw bad_date{};
+    m_year = year >= min_rand_year && year <= max_rand_year ? year : throw bad_date{};
 }
 
 Date::Date (time_t timer)
@@ -59,19 +59,19 @@ Date& Date::str2date (const char * p)
         ++num_of_token;
         switch (num_of_token)
         {
-            case 1:
+            case DAY:
             {
-                m_day   = std::atoi(token) > 0 && std::atoi(token) <= 31 ? std::atoi(token) : throw bad_date{};
+                m_day   = std::atoi(token) > 0 && std::atoi(token) < 32 ? std::atoi(token) : throw bad_date{};
                 break;
             }
-            case 2:
+            case MONTH:
             {
-                m_mon   = std::atoi(token) > 0 && std::atoi(token) <= 12 ? std::atoi(token) : throw bad_date{};
+                m_mon   = std::atoi(token) > 0 && std::atoi(token) < 13 ? std::atoi(token) : throw bad_date{};
                 break;
             }
-            case 3:
+            case YEAR:
             {
-                m_year   = std::atoi(token) > min_rand_year && std::atoi(token) <= max_rand_year ? std::atoi(token) : throw bad_date{};
+                m_year   = std::atoi(token) >= min_rand_year && std::atoi(token) <= max_rand_year ? std::atoi(token) : throw bad_date{};
                 break;
             }
             default:
@@ -92,7 +92,7 @@ constexpr bool Date::is_leap (int year)
 
 int Date::get_month_day () const
 {
-    return days_of_months[is_leap(m_year)][m_mon];
+    return m_day;
 }
 
 int Date::get_month () const
@@ -115,7 +115,7 @@ int Date::get_year () const
     return m_year;
 }
 
-int Date::get_week_day () const
+Date::WeekDay Date::get_weekday () const
 {
     constexpr int m_tabs[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
 
@@ -125,7 +125,9 @@ int Date::get_week_day () const
 
     year = mon < 3 ? year-1 : year;
 
-    return ((year + year / 4 - year / 100 + year / 400 + m_tabs[mon - 1] + day) % 7);
+    WeekDay wd{((year + year / 4 - year / 100 + year / 400 + m_tabs[mon - 1] + day) % 7)};
+
+    return wd;
 }
 
 Date& Date::set_month_day(int day)
@@ -155,63 +157,18 @@ Date& Date::set(int day, int mon, int year)
     return *this;
 }
 
-Date Date::operator- (int day) const
+Date & Date::operator++ ()
 {
-    Date date{*this};
-    for (int i = 0; i < day; ++i)
-        date--;
-    return date;
-}
-
-Date Date::operator+ (int day) const
-{
-    Date date{*this};
-    for (int i = 0; i < day; ++i)
-        date++;
-    return date;
-}
-
-Date & Date::operator+= (int day)
-{
-    m_day += day;
-
-    if (m_day == days_of_months[is_leap(m_year)][m_mon] + 1)
+    if (++m_day > days_of_months[is_leap(m_year)][m_mon])
     {
         m_day = 1;
 
-        if (m_mon == 12)
-        {
+        if (++m_mon > 12) {
             m_mon = 1;
             ++m_year;
         }
-        else
-            ++m_mon;
     }
 
-    return *this;
-}
-
-Date & Date::operator-= (int day)
-{
-    if (m_day == 1) {
-        if (m_mon == 1) {
-            m_mon = 12;
-            --m_year;
-        }
-        else
-            --m_mon;
-
-        m_day = days_of_months[is_leap(m_year)][m_mon];
-    }
-    else
-        m_day -= day;
-
-    return *this;
-}
-
-Date & Date::operator++ ()
-{
-    Date::operator+=(1);
     return *this;
 }
 
@@ -224,7 +181,15 @@ Date Date::operator++ (int)
 
 Date & Date::operator-- ()
 {
-    Date::operator-=(1);
+    if (--m_day < 1)
+    {
+        if (--m_mon < 1) {
+            m_mon = 12;
+            --m_year;
+        }
+        m_day = days_of_months[is_leap(m_year)][m_mon];
+    }
+
     return *this;
 }
 
@@ -235,9 +200,41 @@ Date Date::operator-- (int)
     return temp;
 }
 
+Date Date::operator+ (int day) const
+{
+    Date date{*this};
+    for (int i = 0; i < day; ++i)
+        date++;
+    return date;
+}
+
+Date Date::operator- (int day) const
+{
+    Date date{*this};
+    for (int i = 0; i < day; ++i)
+        date--;
+    return date;
+}
+
+Date & Date::operator+= (int day)
+{
+    for (int i = 0; i < day; ++i)
+        ++*this;
+
+    return *this;
+}
+
+Date & Date::operator-= (int day)
+{
+    for (int i = 0; i < day; ++i)
+        --*this;
+
+    return *this;
+}
+
 bool Date::operator== (const Date & other)const
 {
-    return (m_day == other.m_day && m_mon == other.m_mon && m_year == other.m_year);
+    return ((m_day == other.m_day) && (m_mon == other.m_mon) && (m_year == other.m_year));
 }
 
 bool Date::operator< (const Date & other) const
@@ -254,34 +251,11 @@ bool Date::operator< (const Date & other) const
 
 std::ostream& operator<< (std::ostream & os, const Date & date)
 {
-    static const char * const p_mons[] = {
-                                           "",
-                                           "Ocak",
-                                           "Subat",
-                                           "Mart",
-                                           "Nisan",
-                                           "Mayis",
-                                           "Haziran",
-                                           "Temmuz",
-                                           "Agustos",
-                                           "Eylul",
-                                           "Ekim",
-                                           "Kasim",
-                                           "Aralik"
-    };
-
-    static const char * const p_days[] = {
-                                           "Pazar",
-                                           "Pazartesi",
-                                           "Sali",
-                                           "Carsamba",
-                                           "Persembe",
-                                           "Cuma",
-                                           "Cumartesi"
-    };
+    static const char * const p_days[] = { "Pazar", "Pazartesi", "Sali", "Carsamba", "Persembe", "Cuma", "Cumartesi" };
+    static const char * const p_mons[] = { "", "Ocak", "Subat", "Mart", "Nisan", "Mayis", "Haziran", "Temmuz", "Agustos", "Eylul", "Ekim", "Kasim", "Aralik" };
 
     char buff[25]{};
-    std::sprintf(buff, "%2d %-7s %-4d %-6s", date.m_day, p_mons[date.m_mon], date.m_year, p_days[date.get_week_day()]);
+    std::sprintf(buff, "%2d %-7s %-4d %-6s", date.m_day, p_mons[date.m_mon], date.m_year, p_days[static_cast<int>(date.get_weekday())]);
     return os << buff;
 }
 
@@ -301,7 +275,7 @@ Date Date::random_date ()
     static std::uniform_int_distribution<int>year_dist( min_rand_year, max_rand_year );
     int year = year_dist(eng);
 
-    static std::uniform_int_distribution<int>mon_dist { 1, 12 };
+    static std::uniform_int_distribution<int>mon_dist ( 1, 12 );
     int mon  = mon_dist(eng);
 
     static std::uniform_int_distribution<int>day_dist ( 1, days_of_months[is_leap(year)][mon] );

@@ -13,6 +13,10 @@
 #include <iosfwd>
 #include <exception>
 
+#define     DAY       1
+#define     MONTH     2
+#define     YEAR      3
+
 
 class bad_date : public std::exception {
 public:
@@ -63,7 +67,7 @@ public:
     [[nodiscard]] int get_month () const;
     [[nodiscard]] int get_year_day () const;
     [[nodiscard]] int get_year () const;
-    [[nodiscard]] int get_week_day () const;
+    [[nodiscard]] WeekDay get_weekday () const;
 
     Date& set_month_day(int day);
     Date& set_month(int mon);

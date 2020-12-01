@@ -18,12 +18,15 @@
 int main()
 {
 
+    time_t timer{};
+    Date mydate{time(&timer)};
+
     try
     {
-        time_t timer{};
-        Date mydate{time(&timer)};
-//        mydate - 30;
-        std::cout << mydate - 30 << "\n";
+
+//        mydate -= 30;
+        std::cout << mydate + 365 << "\n";
+//            std::getchar();
     }
     catch (const bad_date& ex)
     {
