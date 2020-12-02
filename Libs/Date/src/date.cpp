@@ -15,6 +15,16 @@
 #include <iomanip>
 #include <random>
 
+enum class Date::WeekDay {
+    Sunday,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday
+};
+
 Date::Date () : m_day(01), m_mon(01), m_year(year_base)
 {
 
@@ -32,9 +42,7 @@ Date::Date (const std::string & date)
 
 Date::Date (int day, int mon, int year)
 {
-    m_day  = day > 0 && day < 32 ? day : throw bad_date{};
-    m_mon  = mon > 0 && mon < 13 ? mon : throw bad_date{};
-    m_year = year >= min_rand_year && year <= max_rand_year ? year : throw bad_date{};
+    set(day, mon, year);
 }
 
 Date::Date (time_t timer)
@@ -61,17 +69,17 @@ Date& Date::str2date (const char * p)
         {
             case DAY:
             {
-                m_day   = std::atoi(token) > 0 && std::atoi(token) < 32 ? std::atoi(token) : throw bad_date{};
+                set_month_day(std::atoi(token));
                 break;
             }
             case MONTH:
             {
-                m_mon   = std::atoi(token) > 0 && std::atoi(token) < 13 ? std::atoi(token) : throw bad_date{};
+                set_month(std::atoi(token));
                 break;
             }
             case YEAR:
             {
-                m_year   = std::atoi(token) >= min_rand_year && std::atoi(token) <= max_rand_year ? std::atoi(token) : throw bad_date{};
+                set_year(std::atoi(token));
                 break;
             }
             default:
@@ -102,12 +110,12 @@ int Date::get_month () const
 
 int Date::get_year_day () const
 {
-    int until_now_days = m_day;
+    auto days_of_until_now = m_day;
 
-    for (int i = 1; i < m_mon; ++i)
-        until_now_days += days_of_months[is_leap(m_year)][i];
+    for (auto i = 1; i < m_mon; ++i)
+        days_of_until_now += days_of_months[is_leap(m_year)][i];
 
-    return until_now_days;
+    return days_of_until_now;
 }
 
 int Date::get_year () const
@@ -119,41 +127,38 @@ Date::WeekDay Date::get_weekday () const
 {
     constexpr int m_tabs[] = { 0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4 };
 
-    int day  = m_day;
-    int mon  = m_mon;
-    int year = m_year;
+    auto day  = m_day;
+    auto mon  = m_mon;
+    auto year = m_year;
 
     year = mon < 3 ? year-1 : year;
 
-    WeekDay wd{((year + year / 4 - year / 100 + year / 400 + m_tabs[mon - 1] + day) % 7)};
+    WeekDay wd{((year + year/4 - year/100 + year/400 + m_tabs[mon - 1] + day) % 7)};
 
     return wd;
 }
 
 Date& Date::set_month_day(int day)
 {
-    m_day = day > 0 && day <= 31 ? day : throw bad_date{};
+    m_day = day >= min_day && day <= max_day ? day : throw bad_date{};
     return *this;
 }
 
 Date& Date::set_month(int mon)
 {
-    m_mon = mon > 0 && mon <= 12 ? mon : throw bad_date{};
+    m_mon = mon >= first_month && mon <= last_month ? mon : throw bad_date{};
     return *this;
 }
 
 Date& Date::set_year(int year)
 {
-    m_year = year > min_rand_year && year <= max_rand_year ? year : throw bad_date{};
+    m_year = year >= min_rand_year && year <= max_rand_year ? year : throw bad_date{};
     return *this;
 }
 
 Date& Date::set(int day, int mon, int year)
 {
-    m_day  = day > 0 && day <= 31 ? day : throw bad_date{};
-    m_mon  = mon > 0 && mon <= 12 ? mon : throw bad_date{};
-    m_year = year > min_rand_year && year <= max_rand_year ? year : throw bad_date{};
-
+    set_month_day(day).set_month(mon).set_year(year);
     return *this;
 }
 
@@ -161,10 +166,10 @@ Date & Date::operator++ ()
 {
     if (++m_day > days_of_months[is_leap(m_year)][m_mon])
     {
-        m_day = 1;
+        m_day = min_day;
 
-        if (++m_mon > 12) {
-            m_mon = 1;
+        if (++m_mon > last_month) {
+            m_mon = first_month;
             ++m_year;
         }
     }
@@ -181,10 +186,10 @@ Date Date::operator++ (int)
 
 Date & Date::operator-- ()
 {
-    if (--m_day < 1)
+    if (--m_day < min_day)
     {
-        if (--m_mon < 1) {
-            m_mon = 12;
+        if (--m_mon < first_month) {
+            m_mon = last_month;
             --m_year;
         }
         m_day = days_of_months[is_leap(m_year)][m_mon];
@@ -203,7 +208,7 @@ Date Date::operator-- (int)
 Date Date::operator+ (int day) const
 {
     Date date{*this};
-    for (int i = 0; i < day; ++i)
+    for (auto i = 0; i < day; ++i)
         date++;
     return date;
 }
@@ -211,14 +216,14 @@ Date Date::operator+ (int day) const
 Date Date::operator- (int day) const
 {
     Date date{*this};
-    for (int i = 0; i < day; ++i)
+    for (auto i = 0; i < day; ++i)
         date--;
     return date;
 }
 
 Date & Date::operator+= (int day)
 {
-    for (int i = 0; i < day; ++i)
+    for (auto i = 0; i < day; ++i)
         ++*this;
 
     return *this;
@@ -226,7 +231,7 @@ Date & Date::operator+= (int day)
 
 Date & Date::operator-= (int day)
 {
-    for (int i = 0; i < day; ++i)
+    for (auto i = 0; i < day; ++i)
         --*this;
 
     return *this;
@@ -273,13 +278,13 @@ Date Date::random_date ()
     static std::mt19937 eng { std::random_device{}() };
 
     static std::uniform_int_distribution<int>year_dist( min_rand_year, max_rand_year );
-    int year = year_dist(eng);
+    auto year = year_dist(eng);
 
     static std::uniform_int_distribution<int>mon_dist ( 1, 12 );
-    int mon  = mon_dist(eng);
+    auto mon  = mon_dist(eng);
 
     static std::uniform_int_distribution<int>day_dist ( 1, days_of_months[is_leap(year)][mon] );
-    int day  = day_dist(eng);
+    auto day  = day_dist(eng);
 
     date.set(day, mon, year);
     return date;

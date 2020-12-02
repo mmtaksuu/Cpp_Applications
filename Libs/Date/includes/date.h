@@ -43,17 +43,13 @@ private:
     static constexpr int year_base     = 1900;
     static constexpr int min_rand_year = 1940;
     static constexpr int max_rand_year = 2020;
+    static constexpr int first_month   = 1;
+    static constexpr int last_month    = 12;
+    static constexpr int min_day       = 1;
+    static constexpr int max_day       = 31;
 public:
 
-    enum class WeekDay {
-        Sunday,
-        Monday,
-        Tuesday,
-        Wednesday,
-        Thursday,
-        Friday,
-        Saturday
-    };
+    enum class WeekDay;
 
     Date ();
     explicit Date (int day, int mon, int year);
@@ -76,15 +72,16 @@ public:
 
     static Date random_date ();
 
-    Date operator+ (int day) const;
-    Date operator- (int day) const;
-    Date& operator+= (int day);
-    Date& operator-= (int day);
-
     Date& operator++ ();
     Date  operator++ (int);
     Date& operator-- ();
     Date  operator-- (int);
+
+    Date operator+ (int day) const;
+    Date operator- (int day) const;
+
+    Date& operator+= (int day);
+    Date& operator-= (int day);
 
     bool operator== (const Date& other)const;
     bool operator<  (const Date& other)const;

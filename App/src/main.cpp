@@ -18,19 +18,16 @@
 int main()
 {
 
-    time_t timer{};
-    Date mydate{time(&timer)};
-
-    try
+    while (true)
     {
-
-//        mydate -= 30;
-        std::cout << mydate + 365 << "\n";
-//            std::getchar();
-    }
-    catch (const bad_date& ex)
-    {
-        std::cout << ex.what() << "\n";
+        try
+        {
+            std::cout << Date::random_date() << "\n";
+        }
+        catch (const bad_date& ex)
+        {
+            std::cout << ex.what() << "\n";
+        }
     }
 
     return 0;
