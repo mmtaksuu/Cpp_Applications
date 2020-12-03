@@ -25,9 +25,9 @@ enum class Date::WeekDay {
     Saturday
 };
 
-Date::Date () : m_day(01), m_mon(01), m_year(year_base)
+Date::Date ()
 {
-
+    set(first_day, first_month, year_base);
 }
 
 Date::Date (const char * p_date)
@@ -40,17 +40,15 @@ Date::Date (const std::string & date)
     str2date(date.c_str());
 }
 
-Date::Date (int day, int mon, int year)
-{
-    set(day, mon, year);
-}
-
 Date::Date (time_t timer)
 {
     auto tm = localtime(&timer);
-    m_day   = tm->tm_mday;
-    m_mon   = tm->tm_mon  + 1;
-    m_year  = tm->tm_year + year_base;
+    set(tm->tm_mday, tm->tm_mon+1, tm->tm_year+year_base);
+}
+
+Date::Date (int day, int mon, int year)
+{
+    set(day, mon, year);
 }
 
 Date& Date::str2date (const char * p)
@@ -58,7 +56,7 @@ Date& Date::str2date (const char * p)
     if (std::strlen(p) > 10 || std::strlen(p) < 8)
         throw bad_date{};
 
-    char str[10]{0};
+    char str[10]{};
     std::strcpy(str, p);
 
     auto num_of_token = 0;
@@ -112,7 +110,7 @@ int Date::get_year_day () const
 {
     auto days_of_until_now = m_day;
 
-    for (auto i = 1; i < m_mon; ++i)
+    for (auto i = first_month; i < m_mon; ++i)
         days_of_until_now += days_of_months[is_leap(m_year)][i];
 
     return days_of_until_now;
@@ -140,7 +138,7 @@ Date::WeekDay Date::get_weekday () const
 
 Date& Date::set_month_day(int day)
 {
-    m_day = day >= min_day && day <= max_day ? day : throw bad_date{};
+    m_day = day >= first_day && day <= last_day ? day : throw bad_date{};
     return *this;
 }
 
@@ -152,7 +150,7 @@ Date& Date::set_month(int mon)
 
 Date& Date::set_year(int year)
 {
-    m_year = year >= min_rand_year && year <= max_rand_year ? year : throw bad_date{};
+    m_year = year >= year_base && year <= std::numeric_limits<int>::max() ? year : throw bad_date{};
     return *this;
 }
 
@@ -166,7 +164,7 @@ Date & Date::operator++ ()
 {
     if (++m_day > days_of_months[is_leap(m_year)][m_mon])
     {
-        m_day = min_day;
+        m_day = first_day;
 
         if (++m_mon > last_month) {
             m_mon = first_month;
@@ -186,7 +184,7 @@ Date Date::operator++ (int)
 
 Date & Date::operator-- ()
 {
-    if (--m_day < min_day)
+    if (--m_day < first_day)
     {
         if (--m_mon < first_month) {
             m_mon = last_month;
@@ -208,7 +206,7 @@ Date Date::operator-- (int)
 Date Date::operator+ (int day) const
 {
     Date date{*this};
-    for (auto i = 0; i < day; ++i)
+    for (auto i = first_day; i < day; ++i)
         date++;
     return date;
 }
@@ -216,14 +214,14 @@ Date Date::operator+ (int day) const
 Date Date::operator- (int day) const
 {
     Date date{*this};
-    for (auto i = 0; i < day; ++i)
+    for (auto i = first_day; i < day; ++i)
         date--;
     return date;
 }
 
 Date & Date::operator+= (int day)
 {
-    for (auto i = 0; i < day; ++i)
+    for (auto i = first_day; i < day; ++i)
         ++*this;
 
     return *this;
@@ -231,7 +229,7 @@ Date & Date::operator+= (int day)
 
 Date & Date::operator-= (int day)
 {
-    for (auto i = 0; i < day; ++i)
+    for (auto i = first_day; i < day; ++i)
         --*this;
 
     return *this;
@@ -244,9 +242,9 @@ bool Date::operator== (const Date & other)const
 
 bool Date::operator< (const Date & other) const
 {
-    if ((m_year < other.m_year) ||
-        ((m_year == other.m_year) && (m_mon < other.m_mon)) ||
-        ((m_year == other.m_year) && (m_mon == other.m_mon) && (m_day < other.m_day)))
+    if ((m_year   < other.m_year) ||
+        ((m_year == other.m_year) && (m_mon  < other.m_mon)) ||
+        ((m_year == other.m_year) && (m_mon == other.m_mon)  && (m_day < other.m_day)))
     {
         return true;
     }
@@ -280,15 +278,63 @@ Date Date::random_date ()
     static std::uniform_int_distribution<int>year_dist( min_rand_year, max_rand_year );
     auto year = year_dist(eng);
 
-    static std::uniform_int_distribution<int>mon_dist ( 1, 12 );
+    static std::uniform_int_distribution<int>mon_dist ( first_month, last_month );
     auto mon  = mon_dist(eng);
 
-    static std::uniform_int_distribution<int>day_dist ( 1, days_of_months[is_leap(year)][mon] );
+    static std::uniform_int_distribution<int>day_dist ( first_day, days_of_months[is_leap(year)][mon] );
     auto day  = day_dist(eng);
 
     date.set(day, mon, year);
     return date;
 }
+
+int Date::get_total_days(const Date& date)
+{
+    int num_of_day = 0;
+
+    for (int i = year_base; i < date.get_year(); ++i)
+        for (int j = first_month; j <= last_month ; ++j)
+            num_of_day += days_of_months[is_leap(i)][j];
+
+    for (int i = first_month; i < date.get_month(); ++i)
+        num_of_day += days_of_months[is_leap(date.get_year())][i];
+
+    num_of_day += date.get_month_day();
+
+    return num_of_day;
+}
+
+int operator- (const Date& date1, const Date& date2)
+{
+    return Date::get_total_days(date1) - Date::get_total_days(date2);
+}
+
+Date operator+ (const Date &date, int n_day)
+{
+    Date temp{date};
+    temp += n_day;
+    return temp;
+}
+
+Date operator+ (int n_day, const Date& date)
+{
+    return operator+(date, n_day);
+}
+
+Date::WeekDay& operator-- (Date::WeekDay &wd)
+{
+    using WeekDay = Date::WeekDay;
+    return wd = static_cast<int>(wd)-1 < 1 ? WeekDay::Monday : static_cast<WeekDay>(static_cast<int>(wd)-1);
+}
+
+Date::WeekDay  operator-- (Date::WeekDay &wd, int)
+{
+    Date::WeekDay temp{wd};
+    --wd;
+    return temp;
+}
+
+
 
 
 

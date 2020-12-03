@@ -35,19 +35,24 @@ private:
 
     Date & str2date (const char * p);
 
-    static constexpr int days_of_months[][13] = {
-            { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
-            { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
-    };
+public:
 
     static constexpr int year_base     = 1900;
     static constexpr int min_rand_year = 1940;
     static constexpr int max_rand_year = 2020;
     static constexpr int first_month   = 1;
     static constexpr int last_month    = 12;
-    static constexpr int min_day       = 1;
-    static constexpr int max_day       = 31;
-public:
+    static constexpr int first_day     = 1;
+    static constexpr int last_day      = 31;
+
+    static constexpr int days_of_months[][13] = {
+            { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
+            { 0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 },
+    };
+
+    static constexpr bool is_leap (int year);
+    static Date random_date ();
+    static int get_total_days(const Date& date);
 
     enum class WeekDay;
 
@@ -55,9 +60,8 @@ public:
     explicit Date (int day, int mon, int year);
     explicit Date (const char * p_date);
     explicit Date (const std::string & date);
-    explicit Date (time_t timer);
 
-    [[nodiscard]] static constexpr bool is_leap (int year);
+    explicit Date (time_t timer);
 
     [[nodiscard]] int get_month_day () const;
     [[nodiscard]] int get_month () const;
@@ -69,8 +73,6 @@ public:
     Date& set_month(int mon);
     Date& set_year(int year);
     Date& set(int day, int mon, int year);
-
-    static Date random_date ();
 
     Date& operator++ ();
     Date  operator++ (int);
@@ -110,6 +112,13 @@ inline bool operator>= (const Date& date1, const Date& date2)
 {
     return !(date1 < date2);
 }
+
+int  operator- (const Date& date1, const Date& date2);
+Date operator+ (const Date& date, int n_day);
+Date operator+ (int n_day, const Date& date);
+
+Date::WeekDay& operator-- (Date::WeekDay &wd);
+Date::WeekDay  operator-- (Date::WeekDay &wd, int n_day);
 
 
 #endif /* DATE_H */
