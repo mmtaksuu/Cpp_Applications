@@ -16,7 +16,6 @@
 #include <random>
 
 
-
 Date::Date ()
 {
     set(first_day, first_month, year_base);

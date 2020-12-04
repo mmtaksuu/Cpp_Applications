@@ -6,6 +6,6 @@
 */cmake-build-release/*
 */clion-log.txt
 cmake-build-debug/
-examples.md
+#examples.md
 Debug/*
 Release/*
