@@ -15,15 +15,7 @@
 #include <iomanip>
 #include <random>
 
-enum class Date::WeekDay {
-    Sunday,
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
-    Saturday
-};
+
 
 Date::Date ()
 {
@@ -203,25 +195,25 @@ Date Date::operator-- (int)
     return temp;
 }
 
-Date Date::operator+ (int day) const
-{
-    Date date{*this};
-    for (auto i = first_day; i < day; ++i)
-        date++;
-    return date;
-}
+//Date Date::operator+ (int day) const
+//{
+//    Date date{*this};
+//    for (auto i = 0; i < day; ++i)
+//        date++;
+//    return date;
+//}
 
 Date Date::operator- (int day) const
 {
     Date date{*this};
-    for (auto i = first_day; i < day; ++i)
+    for (auto i = 0; i < day; ++i)
         date--;
     return date;
 }
 
 Date & Date::operator+= (int day)
 {
-    for (auto i = first_day; i < day; ++i)
+    for (auto i = 0; i < day; ++i)
         ++*this;
 
     return *this;
@@ -229,7 +221,7 @@ Date & Date::operator+= (int day)
 
 Date & Date::operator-= (int day)
 {
-    for (auto i = first_day; i < day; ++i)
+    for (auto i = 0; i < day; ++i)
         --*this;
 
     return *this;
@@ -292,11 +284,11 @@ int Date::get_total_days(const Date& date)
 {
     int num_of_day = 0;
 
-    for (int i = year_base; i < date.get_year(); ++i)
-        for (int j = first_month; j <= last_month ; ++j)
+    for (auto i = year_base; i < date.get_year(); ++i)
+        for (auto j = first_month; j <= last_month ; ++j)
             num_of_day += days_of_months[is_leap(i)][j];
 
-    for (int i = first_month; i < date.get_month(); ++i)
+    for (auto i = first_month; i < date.get_month(); ++i)
         num_of_day += days_of_months[is_leap(date.get_year())][i];
 
     num_of_day += date.get_month_day();

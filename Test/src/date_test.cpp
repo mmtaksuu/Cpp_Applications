@@ -100,6 +100,7 @@ SCENARIO("calender time bilgisi ile Date nesnesinin olusturulmasi", "[Date (time
     }
 }
 
+/*
 SCENARIO("Girilen tarihten n gun sonrasinin hesaplanmasi", "[Date::operator+ ()]")
 {
     GIVEN("Bugunun tarihi")
@@ -107,11 +108,12 @@ SCENARIO("Girilen tarihten n gun sonrasinin hesaplanmasi", "[Date::operator+ ()]
         Date date1{"28/11/2020"};
 
         WHEN("20 gun sonra") {
-            Date date2{date1+20};
+            Date date2{date1.operator+(20)};
             CHECK(date2 == Date{"18/12/2020"});
         }
     }
 }
+*/
 
 SCENARIO("Girilen tarihten n gun oncesinin hesaplanmasi", "[Date::operator- ()]")
 {
@@ -224,7 +226,119 @@ SCENARIO("get_year_day function", "[int get_year_day()]")
     }
 }
 
+SCENARIO("Random date fonksiyonunun gecerli tarih uretmesi", "[random_date()]")
+{
+    WHEN("200 Step to generate random date")
+    {
+        for (int i = 0; i < 200; ++i)
+        {
+            REQUIRE_NOTHROW(Date::random_date());
+        }
+    }
+}
 
+SCENARIO("get_weekday fonksiyonu testi", "[WeekDay get_weekday()]")
+{
+    GIVEN("A date")
+    {
+        CHECK(Date{"04/12/2020"}.get_weekday() == Date::WeekDay::Friday);
+    }
+}
+
+SCENARIO("Prefix Increment Operator Test", "[operator++]")
+{
+    GIVEN("Calender time")
+    {
+        Date date1{"04/12/2020"};
+        Date date2{"31/12/2020"};
+        int n = date2-date1;
+        for (int i = 0; i < n; ++i)
+            ++date1;
+
+        CHECK(date1 == date2);
+    }
+}
+
+SCENARIO("Postfix Increment Operator Test", "[operator++ (int)]")
+{
+    GIVEN("Calender time")
+    {
+        Date date1{"04/12/2020"};
+        Date date2{"31/12/2020"};
+        int n = date2-date1;
+        for (int i = 0; i < n; ++i)
+            date1++;
+
+        CHECK(date1 == date2);
+    }
+}
+
+SCENARIO("Prefix Decrement Operator Test", "[operator--]")
+{
+    GIVEN("Calender time")
+    {
+        Date date{"31/12/2020"};
+        for (int i = 0; i < 27; ++i)
+            --date;
+
+        CHECK(date == Date{"04/12/2020"});
+    }
+}
+
+SCENARIO("Postfix Decrement Operator Test", "[operator--]")
+{
+    GIVEN("Calender time")
+    {
+        Date date{"31/12/2020"};
+        for (int i = 0; i < 27; ++i)
+            date--;
+
+        CHECK(date == Date{"04/12/2020"});
+    }
+}
+
+
+SCENARIO("Islemli Atama Operatoru +=", "[Date::operator+= ()]")
+{
+    GIVEN("A date")
+    {
+        Date date{"04/12/2020"};
+        date += 27;
+        CHECK(date == Date{"31/12/2020"});
+    }
+}
+
+SCENARIO("Islemli Atama Operatoru -=", "[Date::operator-= ()]")
+{
+    GIVEN("A date")
+    {
+        Date date{"31/12/2020"};
+        date -= 27;
+        CHECK(date == Date{"04/12/2020"});
+    }
+}
+
+SCENARIO("Iki tarih nesnesini birbirinden cikaran operatr islevi", "[Date::operator- (Date1, Date2)]")
+{
+    GIVEN("Two different dates")
+    {
+        Date date1{"04/12/2020"};
+        Date date2{"31/12/2020"};
+        CHECK((date2-date1) == 27);
+    }
+}
+
+SCENARIO("Prefix WeekDay Incremnet islevi", "[Date::operator-- (Date1, Date2)]")
+{
+    GIVEN("A weekday object")
+    {
+        using WeekDay = Date::WeekDay;
+        WeekDay wd {WeekDay::Sunday};
+        for (int i = 0; i < 7; ++i)
+            --wd;
+        CHECK(wd == WeekDay::Monday);
+    }
+}
 
 
 

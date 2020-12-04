@@ -54,13 +54,20 @@ public:
     static Date random_date ();
     static int get_total_days(const Date& date);
 
-    enum class WeekDay;
+    enum class WeekDay {
+        Sunday,
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday
+    };
 
     Date ();
     explicit Date (int day, int mon, int year);
     explicit Date (const char * p_date);
     explicit Date (const std::string & date);
-
     explicit Date (time_t timer);
 
     [[nodiscard]] int get_month_day () const;
@@ -79,7 +86,7 @@ public:
     Date& operator-- ();
     Date  operator-- (int);
 
-    Date operator+ (int day) const;
+//    Date operator+ (int day) const;
     Date operator- (int day) const;
 
     Date& operator+= (int day);
