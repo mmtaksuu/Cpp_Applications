@@ -127,5 +127,8 @@ Date operator+ (int n_day, const Date& date);
 Date::WeekDay& operator-- (Date::WeekDay &wd);
 Date::WeekDay  operator-- (Date::WeekDay &wd, int n_day);
 
+Date::WeekDay& operator++ (Date::WeekDay &wd);
+Date::WeekDay  operator++ (Date::WeekDay &wd, int n_day);
+
 
 #endif /* DATE_H */

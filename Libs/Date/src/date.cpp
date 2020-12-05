@@ -315,13 +315,26 @@ Date operator+ (int n_day, const Date& date)
 Date::WeekDay& operator-- (Date::WeekDay &wd)
 {
     using WeekDay = Date::WeekDay;
-    return wd = static_cast<int>(wd)-1 < 1 ? WeekDay::Monday : static_cast<WeekDay>(static_cast<int>(wd)-1);
+    return wd = static_cast<int>(wd)-1 < Date::first_day ? WeekDay::Monday : static_cast<WeekDay>(static_cast<int>(wd)-1);
 }
 
 Date::WeekDay  operator-- (Date::WeekDay &wd, int)
 {
     Date::WeekDay temp{wd};
     --wd;
+    return temp;
+}
+
+Date::WeekDay& operator++ (Date::WeekDay &wd)
+{
+    using WeekDay = Date::WeekDay;
+    return wd = static_cast<int>(wd)+1 > Date::last_day ? WeekDay::Monday : static_cast<WeekDay>(static_cast<int>(wd)+1);
+}
+
+Date::WeekDay  operator++ (Date::WeekDay &wd, int)
+{
+    Date::WeekDay temp{wd};
+    ++wd;
     return temp;
 }
 

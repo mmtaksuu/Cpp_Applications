@@ -51,9 +51,15 @@ int main()
 {
     try
     {
-        Person p1 {};
-        p1.set("Mehmet", "Aksu", Date{"15.07.1994"});
-        std::cout << p1;
+
+        Date date{"05/12/2020"};
+        std::cout << date << "\n";
+        using WeekDay = Date::WeekDay;
+        WeekDay wd{date.get_weekday()};
+
+        ++wd;
+        std::cout << date << "\n";
+
     }
     catch (const bad_date& ex)
     {
