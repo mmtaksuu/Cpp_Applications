@@ -86,7 +86,7 @@ public:
     Date& operator-- ();
     Date  operator-- (int);
 
-//    Date operator+ (int day) const;
+    Date operator+ (int day) const;
     Date operator- (int day) const;
 
     Date& operator+= (int day);
@@ -121,14 +121,16 @@ inline bool operator>= (const Date& date1, const Date& date2)
 }
 
 int  operator- (const Date& date1, const Date& date2);
-Date operator+ (const Date& date, int n_day);
-Date operator+ (int n_day, const Date& date);
+//Date operator+ (const Date& date, int n_day);
+//Date operator+ (int n_day, const Date& date);
 
 Date::WeekDay& operator-- (Date::WeekDay &wd);
 Date::WeekDay  operator-- (Date::WeekDay &wd, int n_day);
 
 Date::WeekDay& operator++ (Date::WeekDay &wd);
 Date::WeekDay  operator++ (Date::WeekDay &wd, int n_day);
+
+std::ostream& operator<< (std::ostream& os, const Date::WeekDay& wd);
 
 
 #endif /* DATE_H */

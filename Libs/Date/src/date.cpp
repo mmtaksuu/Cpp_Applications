@@ -194,13 +194,13 @@ Date Date::operator-- (int)
     return temp;
 }
 
-//Date Date::operator+ (int day) const
-//{
-//    Date date{*this};
-//    for (auto i = 0; i < day; ++i)
-//        date++;
-//    return date;
-//}
+Date Date::operator+ (int day) const
+{
+    Date date{*this};
+    for (auto i = 0; i < day; ++i)
+        date++;
+    return date;
+}
 
 Date Date::operator- (int day) const
 {
@@ -300,22 +300,22 @@ int operator- (const Date& date1, const Date& date2)
     return Date::get_total_days(date1) - Date::get_total_days(date2);
 }
 
-Date operator+ (const Date &date, int n_day)
-{
-    Date temp{date};
-    temp += n_day;
-    return temp;
-}
-
-Date operator+ (int n_day, const Date& date)
-{
-    return operator+(date, n_day);
-}
+//Date operator+ (const Date &date, int n_day)
+//{
+//    Date temp{date};
+//    temp += n_day;
+//    return temp;
+//}
+//
+//Date operator+ (int n_day, const Date& date)
+//{
+//    return operator+(date, n_day);
+//}
 
 Date::WeekDay& operator-- (Date::WeekDay &wd)
 {
     using WeekDay = Date::WeekDay;
-    return wd = static_cast<int>(wd)-1 < Date::first_day ? WeekDay::Monday : static_cast<WeekDay>(static_cast<int>(wd)-1);
+    return wd = wd == WeekDay::Sunday ? WeekDay::Saturday : static_cast<WeekDay>(static_cast<int>(wd)-1);
 }
 
 Date::WeekDay  operator-- (Date::WeekDay &wd, int)
@@ -328,7 +328,7 @@ Date::WeekDay  operator-- (Date::WeekDay &wd, int)
 Date::WeekDay& operator++ (Date::WeekDay &wd)
 {
     using WeekDay = Date::WeekDay;
-    return wd = static_cast<int>(wd)+1 > Date::last_day ? WeekDay::Monday : static_cast<WeekDay>(static_cast<int>(wd)+1);
+    return wd = wd == WeekDay::Saturday ? WeekDay::Sunday : static_cast<WeekDay>(static_cast<int>(wd)+1);
 }
 
 Date::WeekDay  operator++ (Date::WeekDay &wd, int)
@@ -336,6 +336,13 @@ Date::WeekDay  operator++ (Date::WeekDay &wd, int)
     Date::WeekDay temp{wd};
     ++wd;
     return temp;
+}
+
+
+std::ostream& operator<< (std::ostream& os, const Date::WeekDay& wd)
+{
+    static const char * const p_days[] = { "Pazar", "Pazartesi", "Sali", "Carsamba", "Persembe", "Cuma", "Cumartesi" };
+    return os << p_days[static_cast<int>(wd)];
 }
 
 

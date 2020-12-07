@@ -100,7 +100,6 @@ SCENARIO("calender time bilgisi ile Date nesnesinin olusturulmasi", "[Date (time
     }
 }
 
-/*
 SCENARIO("Girilen tarihten n gun sonrasinin hesaplanmasi", "[Date::operator+ ()]")
 {
     GIVEN("Bugunun tarihi")
@@ -113,7 +112,6 @@ SCENARIO("Girilen tarihten n gun sonrasinin hesaplanmasi", "[Date::operator+ ()]
         }
     }
 }
-*/
 
 SCENARIO("Girilen tarihten n gun oncesinin hesaplanmasi", "[Date::operator- ()]")
 {
