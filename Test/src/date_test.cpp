@@ -326,14 +326,50 @@ SCENARIO("Iki tarih nesnesini birbirinden cikaran operatr islevi", "[Date::opera
     }
 }
 
-SCENARIO("Prefix WeekDay Incremnet islevi", "[Date::operator-- (Date1, Date2)]")
+SCENARIO("Prefix WeekDay Increment islevi", "[Date::Weekday::operator++ ()]")
+{
+    GIVEN("A weekday object")
+    {
+        using WeekDay = Date::WeekDay;
+        WeekDay wd {WeekDay::Monday};
+        for (int i = 0; i < 6; ++i)
+            ++wd;
+        CHECK(wd == WeekDay::Sunday);
+    }
+}
+
+SCENARIO("Prefix WeekDay Decrement islevi", "[Date::Weekday::operator-- ()]")
 {
     GIVEN("A weekday object")
     {
         using WeekDay = Date::WeekDay;
         WeekDay wd {WeekDay::Sunday};
-        for (int i = 0; i < 7; ++i)
+        for (int i = 0; i < 6; ++i)
             --wd;
+        CHECK(wd == WeekDay::Monday);
+    }
+}
+
+SCENARIO("Postfix WeekDay Increment islevi", "[Date::Weekday::operator++ ()]")
+{
+    GIVEN("A weekday object")
+    {
+        using WeekDay = Date::WeekDay;
+        WeekDay wd {WeekDay::Monday};
+        for (int i = 0; i < 6; ++i)
+            wd++;
+        CHECK(wd == WeekDay::Sunday);
+    }
+}
+
+SCENARIO("Postfix WeekDay Decrement islevi", "[Date::Weekday::operator-- ()]")
+{
+    GIVEN("A weekday object")
+    {
+        using WeekDay = Date::WeekDay;
+        WeekDay wd {WeekDay::Sunday};
+        for (int i = 0; i < 6; ++i)
+            wd--;
         CHECK(wd == WeekDay::Monday);
     }
 }
