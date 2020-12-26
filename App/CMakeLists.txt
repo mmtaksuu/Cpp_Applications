@@ -16,7 +16,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
                       Libs::Sentence
                       Libs::MyInt
                       Libs::MySmartPointer
-                      Libs::Date)
+                      Libs::Date
+                      Libs::Fraction)
 
 
 

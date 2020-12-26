@@ -24,3 +24,7 @@ file(GLOB_RECURSE SENTENCE_SOURCES "src/sentence_test.cpp" includes/catch.hpp)
 add_executable(sentence_test ${SENTENCE_SOURCES})
 target_link_libraries(sentence_test PRIVATE Libs::Sentence)
 
+file(GLOB_RECURSE FRACTION_SOURCES "src/fraction_test.cpp" includes/catch.hpp)
+add_executable(fraction_test ${FRACTION_SOURCES})
+target_link_libraries(fraction_test PRIVATE Libs::Fraction)
+
