@@ -4,7 +4,7 @@
  * @note    : mmtaksu.25@gmail.com
  * @date    : 22 / December / 2020
  * @code    : fraction.h file
- * @details : 
+ * @details :
  */
 
 
@@ -34,12 +34,14 @@ private:
     Fraction& decimal2fraction (double decimal);
     Fraction& percent2fraction (int percent);
     Fraction& str2fraction (const std::string& s);
-    void simplify ();
+    Fraction& simplify ();
 
 public:
 
-    static constexpr int min_rand_number   = std::numeric_limits<char>::min();
-    static constexpr int max_rand_number   = std::numeric_limits<char>::max();
+    static constexpr int min_rand_numarator   = std::numeric_limits<char>::min();
+    static constexpr int max_rand_numarator   = std::numeric_limits<char>::max();
+    static constexpr int min_rand_denominator = std::integral_constant<int, 1>::value;
+    static constexpr int max_rand_denominator = std::numeric_limits<char>::max();
 
     explicit Fraction(int num = 0, int denum = 1);
     explicit Fraction(double decimal);

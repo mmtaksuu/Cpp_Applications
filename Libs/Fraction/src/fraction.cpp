@@ -4,7 +4,7 @@
  * @note    : mmtaksu.25@gmail.com
  * @date    : 22 / December / 2020
  * @code    : fraction.cpp file
- * @details : 
+ * @details :
  */
 
 #include "fraction.h"
@@ -13,6 +13,7 @@
 #include <sstream>
 #include <numeric>
 #include <random>
+#include <ctime>
 
 Fraction::Fraction (int num, int denum) : m_numerator(num), m_denominator(denum)
 {
@@ -67,9 +68,7 @@ Fraction& Fraction::operator+= (const Fraction& other)
         m_numerator += temp.m_numerator;
     }
 
-    simplify();
-
-    return *this;
+    return simplify();
 }
 
 Fraction& Fraction::operator-= (const Fraction& other)
@@ -91,17 +90,15 @@ Fraction& Fraction::operator-= (const Fraction& other)
         m_numerator -= temp.m_numerator;
     }
 
-    simplify();
-
-    return *this;
+    return simplify();
 }
 
 Fraction& Fraction::operator*= (const Fraction& other)
 {
     m_numerator   *= other.m_numerator;
     m_denominator *= other.m_denominator;
-    simplify();
-    return *this;
+
+    return simplify();
 }
 
 Fraction& Fraction::operator/= (const Fraction& other)
@@ -115,15 +112,13 @@ Fraction& Fraction::operator/= (const Fraction& other)
         m_denominator *= -1;
     }
 
-    simplify();
-    return *this;
+    return simplify();
 }
 
 Fraction& Fraction::operator++ ()
 {
     m_numerator += m_denominator * 1;
-    simplify();
-    return *this;
+    return simplify();
 }
 
 Fraction  Fraction::operator++ (int)
@@ -137,8 +132,7 @@ Fraction  Fraction::operator++ (int)
 Fraction& Fraction::operator-- ()
 {
     m_numerator = m_denominator * 1 - m_numerator;
-    simplify();
-    return *this;
+    return simplify();
 }
 
 Fraction  Fraction::operator-- (int)
@@ -218,7 +212,7 @@ Fraction & Fraction::str2fraction (const std::string & s)
 }
 
 
-void Fraction::simplify ()
+Fraction& Fraction::simplify ()
 {
     int gcd = std::gcd(m_numerator, m_denominator);
     m_numerator   /= gcd;
@@ -229,6 +223,7 @@ void Fraction::simplify ()
         m_numerator   *= -1;
         m_denominator *= -1;
     }
+    return *this;
 }
 
 int Fraction::get_num () const
@@ -264,10 +259,15 @@ std::string Fraction::to_string () const
 Fraction Fraction::random_fraction ()
 {
     static std::mt19937 eng { std::random_device{}() };
-    static std::uniform_int_distribution<int>dist( min_rand_number, max_rand_number );
 
-    Fraction fraction{dist(eng), dist(eng)};
-    fraction.simplify();
+    static bool is_eng_configured = false;
+    if (!is_eng_configured){
+        eng.seed(static_cast<unsigned>(time(nullptr)));
+        is_eng_configured = true;
+    }
 
-    return fraction;
+    static std::uniform_int_distribution<int> num_dist( min_rand_numarator, max_rand_numarator );
+    static std::uniform_int_distribution<int> denum_dist( min_rand_denominator, max_rand_denominator );
+
+    return Fraction{num_dist(eng), denum_dist(eng)}.simplify();
 }
